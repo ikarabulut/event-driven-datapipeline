@@ -1,6 +1,19 @@
 version: "2"
 
 services:
+  db:
+    image: postgres
+    restart: always
+    hostname: postgres
+    environment:
+      POSTGRES_PASSWORD: example
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5432:5432
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
     ports:
@@ -21,6 +34,12 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
 
 volumes:
   zookeeper_data:
