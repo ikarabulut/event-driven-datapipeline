@@ -1,12 +1,26 @@
 # Event Driven Pipeline with Kafka and Python
 
-### Local Setup
+**How to start Kafka and Zookeeper:**
 
-This repository utilizes the [Postgres Sample Dataset](https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/) to load this you need to apply the following commands after starting the docker container.
+- `docker-compose up -d`
+- Running the command above should start Kafka and Zookeeper in the background.
+
+**How to check that the containers are running:**
+
+- `docker ps`
+- The command above prints all of the running docker containers, I expect to see a container for Kafka and one for Zookeeper running.
+
+**Now in the same directory:**
+To consume messages from a topic called `test`:
 
 ```
-docker exec {docker container id} sh -c "createdb dvdrental -h localhost -U postgres"
-pg_restore -h localhost -p 5432 -U postgres ./dvdrental.tar -d dvdrental
+docker-compose exec -it kafka  /opt/bitnami/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
 ```
 
-Password is `example`
+**To produce messages in a different console run:**
+
+```
+poetry run python3 producer.py worker
+```
+
+Now you should send messages being produced from the `producer.py` script and showing up in the consumer window!
